@@ -16,4 +16,27 @@
         }
     }
 
+    /***********************************************************************
+        DOM
+    ************************************************************************/
+
+    Yeti.DOM = new Object();
+
+    /* return a reference to the first child node of that element which is of
+     * nodeType 1.
+     */
+
+    Yeti.DOM.firstElementChild = function(elem) {
+        return elem.firstElementChild ?
+        elem.firstElementChild :
+        (function(elem) {
+            for (var i=0, len=elem.childNodes.length; i<len; i++) {
+                if (elem.childNodes[i].nodeType === 1) {
+                    return elem.childNodes[i];
+                }
+            }
+            return null;
+        })(elem);
+    }
+
 })(window);
