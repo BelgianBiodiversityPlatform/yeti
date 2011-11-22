@@ -22,7 +22,8 @@
 
     Yeti.DOM = new Object();
 
-    /* return a reference to the first child node of that element which is of
+    /* Yeti.DOM.firstElementChild
+     * Returns a reference to the first child node of that element which is of
      * nodeType 1.
      */
 
@@ -37,6 +38,30 @@
             }
             return null;
         })(elem);
+    }
+
+    /* Yeti.DOM.getElementsByClassName
+     * Returns a set of elements which have all the given class names. 
+     */
+
+    Yeti.DOM.getElementsByClassName = function(name, src) {
+        var src = src || document;
+
+        return src.getElementsByClassName ?
+        src.getElementsByClassName(name) :
+        (function(name, src) {
+            var class_pattern = new RegExp("(?:^|\\s)" + name + "(?:\\s|$)"),
+                class_elems = [],
+                selection = src.getElementsByTagName('*');
+
+            for (var i=0, _len=selection.length; i<_len; i++) {
+                if (class_pattern.test(selection[i].className)) {
+                    class_elems.push(selection[i]);
+                }
+            }
+
+            return class_elems;
+        })(name, src);
     }
 
 })(window);
