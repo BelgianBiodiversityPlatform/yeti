@@ -2,6 +2,14 @@
 
     var Yeti = ns.Yeti = new Object();
 
+    Yeti.Element = function(src) {
+        if (typeof(src) === 'string') {
+            return document.getElementById(src);
+        } else {
+            return src;
+        }
+    }
+
     /***********************************************************************
         XMLHttpRequest
     ************************************************************************/
@@ -81,13 +89,15 @@
                     if (node.attributes && node.attributes.length > 0) {
                         for (var i=0, _len=node.attributes.length ; i<_len ; i++) {
                             var attr_name = node.attributes[i].nodeName,
-                                attr_value = node.getAttribute(attr_name);
+                                attr_value = node.getAttribute(attr_name)
+                            ;
 
                             if (attr_name.toLowerCase() == 'style') {
                                 newNode.style.cssText = attr_value;
                             } else if (attr_name.toLowerCase() == 'class') {
                                 newNode.className = attr_value;
                             } else if (attr_name.slice(0,2) == 'on') {
+                                // FIXME: slow...
                                 newNode[attr_name] = new Function(attr_value);
                             } else {
                                 newNode.setAttribute(attr_name, attr_value);
@@ -159,6 +169,21 @@
 
             return class_elems;
         })(name, src);
+    }
+
+    /* Yeti.DOM.removeNodes
+     * Removes all child nodes from an element.
+     */
+
+    Yeti.DOM.removeNodes = function(elem) {
+        var removed = 0;
+
+        while(elem.hasChildNodes()) {
+            elem.removeChild(elem.lastChild);
+            removed++;
+        }
+
+        return removed;
     }
 
 
