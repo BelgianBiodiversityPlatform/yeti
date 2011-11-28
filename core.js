@@ -232,5 +232,13 @@
         this.qs.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
     }
 
+    /* Yeti.Tools.text_proto_str
+     * Returns a detailed text of the constructor
+     */
+
+    Yeti.Tools.proto_str = function(obj) {
+        return Object().toString.call(obj);
+    }
+
 
 })(window);
