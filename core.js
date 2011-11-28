@@ -44,6 +44,81 @@
 
     Yeti.DOM = new Object();
 
+    /* Yeti.DOM.importNode
+     * Creates a copy of a node from an external document that can be
+     * inserted into the current document.
+     */
+
+    Yeti.DOM.importNode = function(node, deep) {
+        if (deep === undefined) {
+            deep = true;
+        }
+
+        return doucment.importNode ?
+        document.importNode(node, deep) :
+        (function(node, deep) {
+
+            /* Returns an integer code representing the type of the node. */
+            var NodeTypes = {
+                ELEMENT_NODE : 1,
+                ATTRIBUTE_NODE : 2,
+                TEXT_NODE : 3,
+                CDATA_SECTION_NODE : 4,
+                ENTITY_REFERENCE_NODE : 5,
+                ENTITY_NODE : 6,
+                PROCESSING_INSTRUCTION_NODE : 7,
+                COMMENT_NODE : 8,
+                DOCUMENT_NODE : 9,
+                DOCUMENT_TYPE_NODE : 10,
+                DOCUMENT_FRAGMENT_NODE : 11,
+                NOTATION_NODE : 12
+            }
+
+            switch (node.nodeType) {
+                case NodeTypes.ELEMENT_NODE:
+                    var newNode = document.createElement(node.nodeName);
+
+                    if (node.attributes && node.attributes.length > 0) {
+                        for (var i=0, _len=node.attributes.length ; i<_len ; i++) {
+                            var attr_name = node.attributes[i].nodeName,
+                                attr_value = node.getAttribute(attr_name);
+
+                            if (attr_name.toLowerCase() == 'style') {
+                                newNode.style.cssText = attr_value;
+                            } else if (attr_name.toLowerCase() == 'class') {
+                                newNode.className = attr_value;
+                            } else if (attr_name.slice(0,2) == 'on') {
+                                newNode[attr_name] = new Function(attr_value);
+                            } else {
+                                newNode.setAttribute(attr_name, attr_value);
+                            }
+                        }
+                    }
+
+                    if (deep && node.childNodes && node.childNodes.length > 0) {
+                        for (var i=0, _len=node.childNodes.length ; i<_len ; i++) {
+                            newNode.appendChild(Yeti.DOM.importNode(node.childNodes[i], deep));
+                        }
+                    }
+
+                    return newNode;
+                    break;
+
+                case NodeTypes.TEXT_NODE:
+                    return document.createTextNode(node.nodeValue);
+                    break;
+
+                case NodeTypes.CDATA_SECTION_NODE:
+                    return document.createCDATASection(node.nodeValue);
+                    break;
+
+                case NodeTypes.COMMENT_NODE:
+                    return document.createComment(node.nodeValue);
+                    break;
+
+        })(node, deep);
+    }
+
     /* Yeti.DOM.firstElementChild
      * Returns a reference to the first child node of that element which is of
      * nodeType 1.
@@ -53,7 +128,7 @@
         return elem.firstElementChild ?
         elem.firstElementChild :
         (function(elem) {
-            for (var i=0, len=elem.childNodes.length; i<len; i++) {
+            for (var i=0, _len=elem.childNodes.length; i<_len; i++) {
                 if (elem.childNodes[i].nodeType === 1) {
                     return elem.childNodes[i];
                 }
