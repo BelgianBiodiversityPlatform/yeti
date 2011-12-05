@@ -2,6 +2,8 @@
 
     var Yeti = ns.Yeti = new Object();
 
+    /* Shortcut to document.getElementById */
+
     Yeti.Element = function(src) {
         if (typeof(src) === 'string') {
             return document.getElementById(src);
@@ -9,7 +11,6 @@
             return src;
         }
     }
-
 
     /***********************************************************************
         XMLHttpRequest
@@ -47,7 +48,7 @@
                 data : null,
                 cache : true,
                 headers : {},
-                response_factory = Yeti.AjaxResponse
+                response_factory : Yeti.AjaxResponse
             }
         ;
 
@@ -66,6 +67,7 @@
         /* Serialize parameters to a query string and append it to the URL if
          * method is GET
          */
+
         if (options.data && typeof(options.data) !== 'string') {
             options.data = new Yeti.Tools.Serializer(options.data).toString();
             if (options.method === 'GET') {
@@ -74,7 +76,8 @@
         }
 
         /* Append a timestamp to the url to avoid caching */
-        if (!cache) {
+
+        if (!options.cache) {
             var __ts = '__ts=' + (new Date()).getTime();
 
             if (url.indexOf('__ts=') === -1) {
@@ -91,11 +94,13 @@
         req.open(options.method, url, options.async)
 
         /* User-defined headers */
+
         for (var i in options.headers) {
             headers[i] = options.headers[i];
         }
 
         /* Set request headers */
+
         for (var i in headers) {
             req.setRequestHeader(i, headers[i]);
         }
@@ -149,13 +154,52 @@
      */
 
     Yeti.JSON.parse = function(data) {
-        return typeof JSON != 'undefined' ?
+        return typeof(JSON) !== 'undefined' ?
         JSON.parse(data) :
         (function(src) {
             // See RFC 4627
             var json = !(/[^,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/.test(src.replace(/"(\\.|[^"\\])*"/g, '')));
             return json ? eval('(' + json + ')') : null;
         })(data);
+    }
+
+
+    /***********************************************************************
+        Event
+    ************************************************************************/
+
+    Yeti.Evt = new Object();
+
+    /* Yeti.Evt.bind
+     * Wrapper for .addEventListener and .attachEvent.
+     */
+
+    Yeti.Evt.bind = function(el, type, listener, capture) {
+        if ((type.substr(0,2).toLowerCase()) == 'on') {
+            type = type.substr(2);
+        }
+
+        if (typeof(capture) != 'boolean') {
+            capture = false;
+        }
+
+        if (el.addEventListener){
+            el.addEventListener(type, listener, capture);
+        } else if (el.attachEvent) {
+            /* In IE events always bubble, no capturing possibility. */
+            //el.attachEvent('on' + type, listener);
+
+            if (el['on' + type] == null) {
+                el['on' + type] = listener;
+            } else {
+                var _e = el['on' + type];
+                el['on' + type] = function() { 
+                    _e(); listener();
+                }
+            }
+        } else {
+            ;
+        }
     }
 
 
@@ -239,6 +283,7 @@
                     return document.createComment(node.nodeValue);
                     break;
 
+            }
         })(node, deep);
     }
 
