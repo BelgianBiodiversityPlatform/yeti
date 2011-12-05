@@ -2,6 +2,8 @@
 
     var Yeti = ns.Yeti = new Object();
 
+    /* Shortcut to document.getElementById */
+
     Yeti.Element = function(src) {
         if (typeof(src) === 'string') {
             return document.getElementById(src);
@@ -26,6 +28,122 @@
 
 
     /***********************************************************************
+        AjaxRequest
+    ************************************************************************/
+
+    Yeti.AjaxRequest = function(target, opts) {
+        var req = Yeti.XMLHttpRequest(),
+            url = target,
+            headers = {
+                'X-Requested-With' : 'XMLHttpRequest',
+                'Accept' : 'text/javascript, text/html, application/xml, text/xml, */*'
+            },
+
+            /* Default options */
+            options = {
+                method : 'GET',
+                async : true,
+                content_type : 'application/x-www-form-urlencoded',
+                charset : 'UTF-8',
+                data : null,
+                cache : true,
+                headers : {},
+                response_factory : Yeti.AjaxResponse
+            }
+        ;
+
+        /* Override default options */
+        for (var i in opts || {}) {
+            options[i] = opts[i];
+        }
+
+        options.method = options.method.toUpperCase();
+
+        if (options.method === 'POST') {
+            headers['Content-Type'] = options.content_type +
+                (options.charset ? '; charset=' + options.charset : '');
+        }
+
+        /* Serialize parameters to a query string and append it to the URL if
+         * method is GET
+         */
+
+        if (options.data && typeof(options.data) !== 'string') {
+            options.data = new Yeti.Tools.Serializer(options.data).toString();
+            if (options.method === 'GET') {
+                url += (url.indexOf('?') === -1 ? '?' : '&') + options.data;
+            }
+        }
+
+        /* Append a timestamp to the url to avoid caching */
+
+        if (!options.cache) {
+            var __ts = '__ts=' + (new Date()).getTime();
+
+            if (url.indexOf('__ts=') === -1) {
+                url += (url.indexOf('?') === -1 ? '?' : '&') + __ts;
+            } else {
+                url = url.replace(/(:?__ts=\d+)/, __ts);
+            }
+        }
+
+        req.onreadystatechange = function() {
+            return options.onreadystatechange(new options.response_factory(this));
+        }
+
+        req.open(options.method, url, options.async)
+
+        /* User-defined headers */
+
+        for (var i in options.headers) {
+            headers[i] = options.headers[i];
+        }
+
+        /* Set request headers */
+
+        for (var i in headers) {
+            req.setRequestHeader(i, headers[i]);
+        }
+
+        req.send(options.data)
+    }
+
+
+    /***********************************************************************
+        AjaxResponse
+    ************************************************************************/
+
+    Yeti.AjaxResponse = function(req) {
+        this.o = req;
+    }
+
+    Yeti.AjaxResponse.prototype.get_status = function() {
+        var code = this.o.status;
+
+        if ((code >= 200 && code < 300) || code == 304) {
+            return 'ok';
+        } else if (code >= 400 && code < 600) {
+            return 'fail';
+        } else {
+            return 'unknown';
+        }
+    }
+
+    Yeti.AjaxResponse.prototype.get_state = function() {
+        return ['uninitialized', 'loading', 'loaded', 'interactive', 
+                'complete'][this.o.readyState] || 'unknown';
+    }
+
+    Yeti.AjaxResponse.prototype.success = function() {
+        return this.get_state() == 'complete' && this.get_status() == 'ok';
+    }
+
+    Yeti.AjaxResponse.prototype.error = function() {
+        return this.get_state() == 'complete' && this.get_status() == 'fail';
+    }
+
+
+    /***********************************************************************
         JSON
     ************************************************************************/
 
@@ -36,13 +154,52 @@
      */
 
     Yeti.JSON.parse = function(data) {
-        return typeof JSON != 'undefined' ?
+        return typeof(JSON) !== 'undefined' ?
         JSON.parse(data) :
         (function(src) {
             // See RFC 4627
             var json = !(/[^,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/.test(src.replace(/"(\\.|[^"\\])*"/g, '')));
             return json ? eval('(' + json + ')') : null;
-        })(data)
+        })(data);
+    }
+
+
+    /***********************************************************************
+        Event
+    ************************************************************************/
+
+    Yeti.Evt = new Object();
+
+    /* Yeti.Evt.bind
+     * Wrapper for .addEventListener and .attachEvent.
+     */
+
+    Yeti.Evt.bind = function(el, type, listener, capture) {
+        if ((type.substr(0,2).toLowerCase()) == 'on') {
+            type = type.substr(2);
+        }
+
+        if (typeof(capture) != 'boolean') {
+            capture = false;
+        }
+
+        if (el.addEventListener){
+            el.addEventListener(type, listener, capture);
+        } else if (el.attachEvent) {
+            /* In IE events always bubble, no capturing possibility. */
+            //el.attachEvent('on' + type, listener);
+
+            if (el['on' + type] == null) {
+                el['on' + type] = listener;
+            } else {
+                var _e = el['on' + type];
+                el['on' + type] = function() { 
+                    _e(); listener();
+                }
+            }
+        } else {
+            ;
+        }
     }
 
 
@@ -126,6 +283,7 @@
                     return document.createComment(node.nodeValue);
                     break;
 
+            }
         })(node, deep);
     }
 
@@ -193,6 +351,14 @@
 
     Yeti.Tools = new Object();
 
+    /* Yeti.Tools.text_proto_str
+     * Returns a detailed text of the constructor
+     */
+
+    Yeti.Tools.proto_str = function(obj) {
+        return Object().toString.call(obj);
+    }
+
     /* Yeti.Tools.Serializer
      * Serialize an object.
      */
@@ -231,14 +397,5 @@
     Yeti.Tools.Serializer.prototype._encodeString = function(key, value) {
         this.qs.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
     }
-
-    /* Yeti.Tools.text_proto_str
-     * Returns a detailed text of the constructor
-     */
-
-    Yeti.Tools.proto_str = function(obj) {
-        return Object().toString.call(obj);
-    }
-
 
 })(window);
