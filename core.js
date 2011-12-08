@@ -1,3 +1,7 @@
+/*
+    Yeti, a simple Javascript library
+*/
+
 ;(function(ns) {
 
     var Yeti = ns.Yeti = new Object();
@@ -115,6 +119,8 @@
 
     Yeti.AjaxResponse = function(req) {
         this.o = req;
+        this.readyStates = ['uninitialized', 'loading', 'loaded',
+                            'interactive', 'complete'];
     }
 
     Yeti.AjaxResponse.prototype.get_status = function() {
@@ -130,8 +136,7 @@
     }
 
     Yeti.AjaxResponse.prototype.get_state = function() {
-        return ['uninitialized', 'loading', 'loaded', 'interactive', 
-                'complete'][this.o.readyState] || 'unknown';
+        return this.readyStates[this.o.readyState] || 'unknown';
     }
 
     Yeti.AjaxResponse.prototype.success = function() {
@@ -188,13 +193,13 @@
         } else if (el.attachEvent) {
             /* In IE events always bubble, no capturing possibility. */
             //el.attachEvent('on' + type, listener);
+            var _type = 'on' + type;
 
-            if (el['on' + type] == null) {
-                el['on' + type] = listener;
+            if (el[_type] === null) {
+                el[_type] = listener;
             } else {
-                var _e = el['on' + type];
-                el['on' + type] = function() { 
-                    _e(); listener();
+                el[_type] = function() {
+                    el[_type](); listener();
                 }
             }
         } else {
@@ -219,7 +224,7 @@
             deep = true;
         }
 
-        return doucment.importNode ?
+        return document.importNode ?
         document.importNode(node, deep) :
         (function(node, deep) {
 
@@ -317,7 +322,8 @@
         (function(name, src) {
             var class_pattern = new RegExp("(?:^|\\s)" + name + "(?:\\s|$)"),
                 class_elems = [],
-                selection = src.getElementsByTagName('*');
+                selection = src.getElementsByTagName('*')
+            ;
 
             for (var i=0, _len=selection.length; i<_len; i++) {
                 if (class_pattern.test(selection[i].className)) {
@@ -351,11 +357,11 @@
 
     Yeti.Tools = new Object();
 
-    /* Yeti.Tools.text_proto_str
+    /* Yeti.Tools.protoStr
      * Returns a detailed text of the constructor
      */
 
-    Yeti.Tools.proto_str = function(obj) {
+    Yeti.Tools.protoStr = function(obj) {
         return Object().toString.call(obj);
     }
 
