@@ -219,7 +219,7 @@
             deep = true;
         }
 
-        return doucment.importNode ?
+        return document.importNode ?
         document.importNode(node, deep) :
         (function(node, deep) {
 
