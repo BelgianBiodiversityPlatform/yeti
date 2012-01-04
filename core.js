@@ -6,6 +6,12 @@
 
     var Yeti = ns.Yeti = new Object();
 
+    /* Simple URL cleaner */
+
+    Yeti.url_for = function() {
+        return Array.prototype.slice.call(arguments).join('/').replace(/\/{2,}/, '/');
+    }
+
     /* Shortcut to document.getElementById */
 
     Yeti.Element = function(src) {
@@ -321,17 +327,17 @@
         src.getElementsByClassName(name) :
         (function(name, src) {
             var class_pattern = new RegExp("(?:^|\\s)" + name + "(?:\\s|$)"),
-                class_elems = [],
+                elems = [],
                 selection = src.getElementsByTagName('*')
             ;
 
             for (var i=0, _len=selection.length; i<_len; i++) {
                 if (class_pattern.test(selection[i].className)) {
-                    class_elems.push(selection[i]);
+                    elems.push(selection[i]);
                 }
             }
 
-            return class_elems;
+            return elems;
         })(name, src);
     }
 
