@@ -356,6 +356,17 @@
         return removed;
     }
 
+    /* Yeti.DOM.appendClone
+     * Append a cloned node to an element. Needed because elem.appendChild() 
+     * on an imported node (document.importNode) is broken under IE
+     */
+
+    Yeti.DOM.appendClone = function(node, cloned_node) {
+        document.importNode
+            ? node.appendChild(cloned_node)
+            : node.appendChild(cloned_node).innerHTML = cloned_node.innerHTML;
+    }
+
 
     /***********************************************************************
         Tools
