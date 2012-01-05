@@ -1,6 +1,16 @@
+/*
+    Yeti, a simple Javascript library
+*/
+
 ;(function(ns) {
 
     var Yeti = ns.Yeti = new Object();
+
+    /* Simple URL cleaner */
+
+    Yeti.url_for = function() {
+        return Array.prototype.slice.call(arguments).join('/').replace(/\/{2,}/, '/');
+    }
 
     /* Shortcut to document.getElementById */
 
@@ -115,6 +125,8 @@
 
     Yeti.AjaxResponse = function(req) {
         this.o = req;
+        this.readyStates = ['uninitialized', 'loading', 'loaded',
+                            'interactive', 'complete'];
     }
 
     Yeti.AjaxResponse.prototype.get_status = function() {
@@ -130,8 +142,7 @@
     }
 
     Yeti.AjaxResponse.prototype.get_state = function() {
-        return ['uninitialized', 'loading', 'loaded', 'interactive', 
-                'complete'][this.o.readyState] || 'unknown';
+        return this.readyStates[this.o.readyState] || 'unknown';
     }
 
     Yeti.AjaxResponse.prototype.success = function() {
@@ -188,13 +199,13 @@
         } else if (el.attachEvent) {
             /* In IE events always bubble, no capturing possibility. */
             //el.attachEvent('on' + type, listener);
+            var _type = 'on' + type;
 
-            if (el['on' + type] == null) {
-                el['on' + type] = listener;
+            if (el[_type] === null) {
+                el[_type] = listener;
             } else {
-                var _e = el['on' + type];
-                el['on' + type] = function() { 
-                    _e(); listener();
+                el[_type] = function() {
+                    el[_type](); listener();
                 }
             }
         } else {
@@ -316,16 +327,17 @@
         src.getElementsByClassName(name) :
         (function(name, src) {
             var class_pattern = new RegExp("(?:^|\\s)" + name + "(?:\\s|$)"),
-                class_elems = [],
-                selection = src.getElementsByTagName('*');
+                elems = [],
+                selection = src.getElementsByTagName('*')
+            ;
 
             for (var i=0, _len=selection.length; i<_len; i++) {
                 if (class_pattern.test(selection[i].className)) {
-                    class_elems.push(selection[i]);
+                    elems.push(selection[i]);
                 }
             }
 
-            return class_elems;
+            return elems;
         })(name, src);
     }
 
@@ -344,6 +356,17 @@
         return removed;
     }
 
+    /* Yeti.DOM.appendClone
+     * Append a cloned node to an element. Needed because elem.appendChild() 
+     * on an imported node (document.importNode) is broken under IE
+     */
+
+    Yeti.DOM.appendClone = function(node, cloned_node) {
+        document.importNode
+            ? node.appendChild(cloned_node)
+            : node.appendChild(cloned_node).innerHTML = cloned_node.innerHTML;
+    }
+
 
     /***********************************************************************
         Tools
@@ -351,11 +374,11 @@
 
     Yeti.Tools = new Object();
 
-    /* Yeti.Tools.text_proto_str
+    /* Yeti.Tools.protoStr
      * Returns a detailed text of the constructor
      */
 
-    Yeti.Tools.proto_str = function(obj) {
+    Yeti.Tools.protoStr = function(obj) {
         return Object().toString.call(obj);
     }
 
