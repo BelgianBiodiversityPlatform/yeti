@@ -39,6 +39,7 @@
         src.replace(/^\s+|\s+$/g,'');
     }
 
+
     /***********************************************************************
         XMLHttpRequest
     ************************************************************************/
@@ -407,6 +408,24 @@
         }
 
         elem.className = values.join(' ');
+    }
+
+    /* Yeti.DOM.removeClass
+     * Remove a class from an element.
+     */
+
+    Yeti.DOM.removeClass = function(elem, value) {
+        if (elem.className) {
+            var values = value.split(' '),
+                new_cls = elem.className
+            ;
+
+            for (var i=0, _len=values.length; i<_len; i++) {
+                new_cls = new_cls.replace(values[i], ' ');
+            }
+
+            elem.className = Yeti.Str.trim(new_cls.replace(/\s{2,}/g, ' '))
+        }
     }
 
 
