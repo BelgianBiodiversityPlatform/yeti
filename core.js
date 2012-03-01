@@ -22,6 +22,23 @@
         }
     }
 
+
+    /***********************************************************************
+        Str
+    ************************************************************************/
+
+    Yeti.Str = new Object()
+
+    /* Yeti.Str.trim
+     * Returns the string stripped of whitespace from both ends.
+     */
+
+    Yeti.Str.trim = function(src) {
+        return src.trim ?
+        src.trim() :
+        src.replace(/^\s+|\s+$/g,'');
+    }
+
     /***********************************************************************
         XMLHttpRequest
     ************************************************************************/
@@ -357,7 +374,7 @@
     }
 
     /* Yeti.DOM.appendClone
-     * Append a cloned node to an element. Needed because elem.appendChild() 
+     * Append a cloned node to an element. Needed because elem.appendChild()
      * on an imported node (document.importNode) is broken under IE
      */
 
@@ -365,6 +382,31 @@
         document.importNode
             ? node.appendChild(cloned_node)
             : node.appendChild(cloned_node).innerHTML = cloned_node.innerHTML;
+    }
+
+    /* Yeti.DOM.addClass
+     * Append a class to an element.
+     */
+
+    Yeti.DOM.addClass = function(elem, value) {
+        var values = value.split(/\s+/);
+
+        if (elem.className) {
+            values = values.concat(elem.className.split(/\s+/)).sort();
+            var i = 0,
+                _len = values.length
+            ;
+
+            while (i < _len) {
+                while(values[i] === values[i+1]) {
+                    values.splice(i, 1);
+                    _len--;
+                }
+                i++;
+            }
+        }
+
+        elem.className = values.join(' ');
     }
 
 
