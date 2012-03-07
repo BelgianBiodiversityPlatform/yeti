@@ -441,8 +441,8 @@
                 width : document.body.clientWidth
             } : document.documentElement && 
                 document.documentElement.clientHeight ? {
-                    height : document.documentElement.clientHeight;
-                    width : document.documentElement.clientWidth;
+                    height : document.documentElement.clientHeight,
+                    width : document.documentElement.clientWidth
                 } : undefined;
     }
 
