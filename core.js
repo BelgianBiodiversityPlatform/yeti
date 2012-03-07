@@ -428,6 +428,24 @@
         }
     }
 
+    /* Yeti.DOM.getWindowSize
+     * Returns the size of the browser window.
+     */
+
+    Yeti.DOM.getWindowSize = function() {
+        return typeof(window.innerHeight == 'number') ? {
+            height : window.innerHeight,
+            width : window.innerWidth
+        } : document.body && document.body.clientHeight ? {
+                height : document.body.clientHeight,
+                width : document.body.clientWidth
+            } : document.documentElement && 
+                document.documentElement.clientHeight ? {
+                    height : document.documentElement.clientHeight,
+                    width : document.documentElement.clientWidth
+                } : undefined;
+    }
+
 
     /***********************************************************************
         Tools
