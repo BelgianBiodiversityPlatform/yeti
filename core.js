@@ -516,35 +516,14 @@
         }
 
         this.callbacks[evt].push({
-            'evt' : evt,
             'callback' : callback,
             'scope' : scope || this.default_scope
         });
     }
 
-    Yeti.Tools.Dispatcher.prototype.remove = function(params) {
-        var _checks = ['evt', 'callback', 'scope'];
-
-        for (var i=0, _len=this.callbacks.length; i<_len; i++) {
-            var cb = this.callbacks[i],
-                cond = undefined
-            ;
-
-            for (var j=0, _len2=_checks.length; j<_len2; j++) {
-                var check = _checks[j];
-
-                if (params[check] !== undefined) { 
-                    if (cond === undefined) {
-                        cond = params[check] === cb[check] ? true : false;
-                    } else {
-                        cond &= params[check] === cb[check] ? true : false;
-                    }
-                }
-            }
-
-            if (cond) {
-                delete this.callback[i];
-            }
+    Yeti.Tools.Dispatcher.prototype.remove = function(evt) {
+        if (this.callbacks[evt]) {
+            delete this.callbacks[evt];
         }
     }
 
