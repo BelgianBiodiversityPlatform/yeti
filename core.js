@@ -530,8 +530,8 @@
                 cond = undefined
             ;
 
-            for (var i in _checks) {
-                var check = _checks[i];
+            for (var j=0, _len2=_checks.length; j<_len2; j++) {
+                var check = _checks[j];
 
                 if (params[check] !== undefined) { 
                     if (cond === undefined) {
