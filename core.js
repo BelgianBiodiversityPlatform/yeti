@@ -12,7 +12,7 @@
         return Array.prototype.slice.call(arguments).join('/').replace(/\/{2,}/, '/');
     }
 
-    /* Shortcut to document.getElementById */
+    /* Wrapper for document.getElementById */
 
     Yeti.Element = function(src) {
         if (typeof(src) === 'string') {
@@ -186,7 +186,7 @@
         return typeof(JSON) !== 'undefined' ?
         JSON.parse(data) :
         (function(src) {
-            // See RFC 4627
+            // Taken from RFC 4627 (http://tools.ietf.org/html/rfc4627)
             var json = !(/[^,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]/.test(src.replace(/"(\\.|[^"\\])*"/g, '')));
             return json ? eval('(' + json + ')') : null;
         })(data);
@@ -433,13 +433,14 @@
      */
 
     Yeti.DOM.getWindowSize = function() {
-        return typeof(window.innerHeight == 'number') ? {
+        return
+        typeof(window.innerHeight == 'number') ? {
             height : window.innerHeight,
             width : window.innerWidth
         } : document.body && document.body.clientHeight ? {
                 height : document.body.clientHeight,
                 width : document.body.clientWidth
-            } : document.documentElement && 
+            } : document.documentElement &&
                 document.documentElement.clientHeight ? {
                     height : document.documentElement.clientHeight,
                     width : document.documentElement.clientWidth
@@ -498,6 +499,44 @@
 
     Yeti.Tools.Serializer.prototype._encodeString = function(key, value) {
         this.qs.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+    }
+
+    /* Yeti.Tools.Dispatcher
+     * A simple subscribe/publish dispatcher
+     */ 
+ 
+    Yeti.Tools.Dispatcher = function(scope) {
+        this.default_scope = scope || this;
+        this.callbacks = {};
+    }
+
+    Yeti.Tools.Dispatcher.prototype.add = function(evt, callback, scope) {
+        if (!this.callbacks[evt]) {
+            this.callbacks[evt] = [];
+        }
+
+        this.callbacks[evt].push({
+            'callback' : callback,
+            'scope' : scope || this.default_scope
+        });
+    }
+
+    Yeti.Tools.Dispatcher.prototype.remove = function(evt) {
+        if (this.callbacks[evt]) {
+            delete this.callbacks[evt];
+        }
+    }
+
+    Yeti.Tools.Dispatcher.prototype.fire = function(evt, params) {
+        var cbs = this.callbacks[evt];
+
+        if (!cbs) {
+            return false;
+        }
+
+        for (var i=0, _len=cbs.length; i<_len; i++) {
+            cbs[i].callback.call(cbs[i].scope, params, arguments);
+        }
     }
 
 })(window);
