@@ -72,7 +72,7 @@
                 html : 'text/html',
                 xml : 'application/xml, text/xml',
                 text : 'text/plain'
-            }
+            },
 
             /* Default options */
             options = {
