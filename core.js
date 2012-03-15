@@ -59,13 +59,20 @@
         AjaxRequest
     ************************************************************************/
 
-    Yeti.AjaxRequest = function(target, opts) {
+    Yeti.AjaxRequest = function(url, opts) {
         var req = Yeti.XMLHttpRequest(),
-            url = target,
+            /* Request headers */
             headers = {
-                'X-Requested-With' : 'XMLHttpRequest',
-                'Accept' : 'text/javascript, text/html, application/xml, text/xml, */*'
+                'x-requested-with' : 'XMLHttpRequest'
             },
+
+            /* Accept mapping */
+            accepts = {
+                json : 'application/json, text/json, text/javascript',
+                html : 'text/html',
+                xml : 'application/xml, text/xml',
+                text : 'text/plain'
+            }
 
             /* Default options */
             options = {
@@ -75,10 +82,11 @@
                 charset : 'UTF-8',
                 data : null,
                 cache : true,
+                accept : undefined,
                 headers : {},
                 response_factory : Yeti.AjaxResponse
             }
-        ;
+        ; // var
 
         /* Override default options */
         for (var i in opts || {}) {
@@ -95,7 +103,6 @@
         /* Serialize parameters to a query string and append it to the URL if
          * method is GET
          */
-
         if (options.data && typeof(options.data) !== 'string') {
             options.data = new Yeti.Tools.Serializer(options.data).toString();
             if (options.method === 'GET') {
@@ -104,7 +111,6 @@
         }
 
         /* Append a timestamp to the url to avoid caching */
-
         if (!options.cache) {
             var __ts = '__ts=' + (new Date()).getTime();
 
@@ -122,13 +128,17 @@
         req.open(options.method, url, options.async)
 
         /* User-defined headers */
-
         for (var i in options.headers) {
-            headers[i] = options.headers[i];
+            headers[i.toLowerCase()] = options.headers[i];
+        }
+
+        /* Ensure that the "Accept" header is properly set */
+        if (!headers.accept) {
+            headers.accept = accepts[options.accept] !== undefined ?
+                             accepts[options.accept] : '*/*';
         }
 
         /* Set request headers */
-
         for (var i in headers) {
             req.setRequestHeader(i, headers[i]);
         }
@@ -470,7 +480,9 @@
         this.qs = [];
 
         for (var key in obj) {
-            this._encodeValue(key, obj[key]);
+            if (obj.hasOwnProperty(key)) {
+                this._encodeValue(key, obj[key]);
+            }
         }
     }
 
