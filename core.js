@@ -444,7 +444,7 @@
 
     Yeti.DOM.getWindowSize = function() {
         return
-        typeof(window.innerHeight == 'number') ? {
+        typeof(window.innerHeight) == 'number' ? {
             height : window.innerHeight,
             width : window.innerWidth
         } : document.body && document.body.clientHeight ? {
