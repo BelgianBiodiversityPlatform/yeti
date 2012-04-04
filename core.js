@@ -36,7 +36,15 @@
     Yeti.Str.trim = function(src) {
         return src.trim ?
         src.trim() :
-        src.replace(/^\s+|\s+$/g,'');
+        src.replace(/^\s+|\s+$/g, '');
+    }
+
+    /* Yeti.Str.reverse
+     * Returns the string reversed.
+     */
+
+    Yeti.Str.reverse = function(src) {
+        return src.split('').reverse().join('');
     }
 
 
@@ -443,8 +451,7 @@
      */
 
     Yeti.DOM.getWindowSize = function() {
-        return
-        typeof(window.innerHeight == 'number') ? {
+        return typeof(window.innerHeight) == 'number' ? {
             height : window.innerHeight,
             width : window.innerWidth
         } : document.body && document.body.clientHeight ? {
@@ -454,7 +461,26 @@
                 document.documentElement.clientHeight ? {
                     height : document.documentElement.clientHeight,
                     width : document.documentElement.clientWidth
-                } : undefined;
+                } : undefined
+    }
+
+    /* Yeti.DOM.getScrollXY
+     * Returns the number of pixels that the document has already been 
+     * scrolled.
+     */
+
+    Yeti.DOM.getScrollXY = function() {
+        return typeof(window.pageYOffset) == 'number' ? {
+            Y : window.pageYOffset,
+            X : window.pageXOffset
+        } : document.body && document.body.scrollLeft ? {
+                Y : document.body.scrollTop,
+                X : document.body.scrollLeft
+            } document.documentElement &&
+              document.documentElement.scollLeft ? {
+                    Y : document.documentElement.scrollTop,
+                    X : document.documentElement.scrollLeft
+                } : { Y : 0, X : 0 }
     }
 
 
