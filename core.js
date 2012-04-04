@@ -39,6 +39,14 @@
         src.replace(/^\s+|\s+$/g,'');
     }
 
+    /* Yeti.Str.reverse
+     * Returns the string reversed.
+     */
+
+    Yeti.Str.reverse = function(src) {
+        return src.split('').reverse().join('');
+    }
+
 
     /***********************************************************************
         XMLHttpRequest
