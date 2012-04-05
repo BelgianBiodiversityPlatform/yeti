@@ -15,11 +15,7 @@
     /* Wrapper for document.getElementById */
 
     Yeti.Element = function(src) {
-        if (typeof(src) === 'string') {
-            return document.getElementById(src);
-        } else {
-            return src;
-        }
+        return typeof(src) === 'string' ? document.getElementById(src) : src;
     }
 
 
@@ -476,8 +472,8 @@
         } : document.body && document.body.scrollLeft ? {
                 Y : document.body.scrollTop,
                 X : document.body.scrollLeft
-            } document.documentElement &&
-              document.documentElement.scollLeft ? {
+            } : document.documentElement &&
+                document.documentElement.scollLeft ? {
                     Y : document.documentElement.scrollTop,
                     X : document.documentElement.scrollLeft
                 } : { Y : 0, X : 0 }
