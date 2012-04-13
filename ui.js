@@ -38,14 +38,14 @@
 
         if (this.options.overlay) {
             this.overlay = document.createElement('div')
-            this.overlay.style.top = 0;
-            this.overlay.style.left = 0;
+            this.overlay.style.top = 0 + 'px';
+            this.overlay.style.left = 0 + 'px';
             this.overlay.style.position = 'absolute';
             this.overlay.style.zIndex = this.frame.zIndex - 1;
             Yeti.DOM.addClass(this.overlay, 'ui-frame-overlay');
 
-            this.overlay.style.width = document.body.scrollWidth;
-            this.overlay.style.height = document.body.scrollHeight;
+            this.overlay.style.width = document.body.scrollWidth + 'px';
+            this.overlay.style.height = document.body.scrollHeight + 'px';
 
             Yeti.Evt.bind(this.overlay, 'click', function() {
                 _self.detach();
@@ -63,8 +63,8 @@
         this.frame.appendChild(this.header);
         this.frame.appendChild(this.body);
 
-        this.frame.style.width = this.options.width;
-        this.frame.style.height = this.options.height;
+        this.frame.style.width = this.options.width + 'px';
+        this.frame.style.height = this.options.height + 'px';
 
         this.set_title(this.options.title);
         this.set_body(this.options.body);
@@ -103,8 +103,8 @@
     UI.Frame.prototype.set_position = function(position) {
         var position = position || this.get_position();
 
-        this.frame.style.left = position.left;
-        this.frame.style.top = position.top;
+        this.frame.style.left = position.left + 'px';
+        this.frame.style.top = position.top + 'px';
     }
 
     UI.Frame.prototype.set_title = function(value) {
