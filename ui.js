@@ -37,9 +37,7 @@
         this.frame.style.position = 'absolute';
 
         if (this.options.overlay) {
-            var window_size = Yeti.DOM.getWindowSize(),
-                scroll_offset = Yeti.DOM.getScrollXY()
-            ;
+            var window_size = Yeti.DOM.getWindowSize();
 
             this.overlay = document.createElement('div')
             this.overlay.style.top = 0 + 'px';
@@ -48,8 +46,11 @@
             this.overlay.style.zIndex = this.frame.zIndex - 1;
             Yeti.DOM.addClass(this.overlay, 'ui-frame-overlay');
 
-            this.overlay.style.width = window_size.width + scroll_offset.X + 'px';
-            this.overlay.style.height = window_size.height + scroll_offset.Y + 'px';
+            this.overlay.style.width = Math.max(window_size.width,
+                document.body.scrollWidth) + 'px';
+
+            this.overlay.style.height = Math.max(window_size.height,
+                document.body.scrollHeight) + 'px';
 
             Yeti.Evt.bind(this.overlay, 'click', function() {
                 _self.detach();
