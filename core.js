@@ -546,7 +546,7 @@
                 new_cls = new_cls.replace(values[i], ' ');
             }
 
-            elem.className = Yeti.Str.trim(new_cls.replace(/\s{2,}/g, ' '))
+            elem.className = new_cls.replace(/\s{2,}/g, ' ').trim();
         }
     }
 
