@@ -30,8 +30,12 @@
         acceptable.
     ************************************************************************/
 
-    /* This is taken from https://developer.mozilla.org and is exactly the
-     * one specified in ECMA-262.
+    /* Array.indexOf
+     * Returns the first (least) index of an element within the array equal
+     * to the specified value, or -1 if none is found.
+     *
+     * Implementation is taken from https://developer.mozilla.org and is
+     * exactly the one specified in ECMA-262.
      */
 
     if (!Array.prototype.indexOf) {  
@@ -76,8 +80,12 @@
         }
     }
 
-    /* This is taken from https://developer.mozilla.org and is exactly the
-     * one specified in ECMA-262.
+    /* Array.lastIndexOf
+     * Returns the last (greatest) index of an element within the array equal
+     * to the specified value, or -1 if none is found.
+     *
+     * Implementation is taken from https://developer.mozilla.org and is
+     * exactly the one specified in ECMA-262.
      */
 
     if (!Array.prototype.lastIndexOf) {
@@ -118,22 +126,22 @@
       };
     }
 
+    /* String.trim
+     * Removes whitespace from both ends of the string.
+     */
+
+    if (!String.prototype.trim) {  
+        String.prototype.trim = function () {  
+            return this.replace(/^\s+|\s+$/g, '');  
+        };
+    }
+
 
     /***********************************************************************
         Str
     ************************************************************************/
 
     Yeti.Str = new Object()
-
-    /* Yeti.Str.trim
-     * Returns the string stripped of whitespace from both ends.
-     */
-
-    Yeti.Str.trim = function(src) {
-        return src.trim ?
-        src.trim() :
-        src.replace(/^\s+|\s+$/g, '');
-    }
 
     /* Yeti.Str.reverse
      * Returns the string reversed.
@@ -538,7 +546,7 @@
                 new_cls = new_cls.replace(values[i], ' ');
             }
 
-            elem.className = Yeti.Str.trim(new_cls.replace(/\s{2,}/g, ' '))
+            elem.className = new_cls.replace(/\s{2,}/g, ' ').trim();
         }
     }
 
