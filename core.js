@@ -1,5 +1,6 @@
 /*
     Yeti, a simple Javascript library
+    ---------------------------------
 */
 
 ;(function(ns) {
