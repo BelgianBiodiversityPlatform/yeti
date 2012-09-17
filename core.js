@@ -322,6 +322,16 @@
 
     Yeti.Evt = new Object();
 
+    /* Yeti.Evt.preventDefault
+     * Cancels the event if it is cancelable, without stopping further 
+     * propagation of the event.
+     */
+
+    Yeti.Evt.preventDefault = function(e) {
+        e.preventDefault ? e.preventDefault()
+                         : e.returnValue = false;
+    }
+
     /* Yeti.Evt.bind
      * Wrapper for .addEventListener and .attachEvent.
      */
