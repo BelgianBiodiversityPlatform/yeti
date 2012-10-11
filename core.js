@@ -501,7 +501,7 @@
         for (var i=0, _len=elem.childNodes.length; i<_len; i++) {
             var child = elem.childNodes[i];
             if (child.nodeType === 1 && child.nodeName.toUpperCase() == tag) {
-                return elem.childNodes[i];
+                return child;
             }
         }
         return null;
