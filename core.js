@@ -492,6 +492,21 @@
         })(name, src);
     }
 
+    /* Yeti.DOM.firstElementTag
+     * Returns a reference to the first child node of that element which is of
+     * nodeType 1 and of tag <tag>.
+     */
+    Yeti.DOM.firstElementTag = function(elem, tag) {
+        var tag = tag.toUpperCase();
+        for (var i=0, _len=elem.childNodes.length; i<_len; i++) {
+            if (elem.childNodes[i].nodeType === 1 &&
+                elem.nodeName.toUpperCase() == tag) {
+                return elem.childNodes[i];
+            }
+        }
+        return null;
+    }
+
     /* Yeti.DOM.removeNodes
      * Removes all child nodes from an element.
      */
