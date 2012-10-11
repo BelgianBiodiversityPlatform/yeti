@@ -499,8 +499,8 @@
     Yeti.DOM.firstElementTag = function(elem, tag) {
         var tag = tag.toUpperCase();
         for (var i=0, _len=elem.childNodes.length; i<_len; i++) {
-            if (elem.childNodes[i].nodeType === 1 &&
-                elem.nodeName.toUpperCase() == tag) {
+            var child = elem.childNodes[i];
+            if (child.nodeType === 1 && child.nodeName.toUpperCase() == tag) {
                 return elem.childNodes[i];
             }
         }
