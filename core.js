@@ -633,12 +633,12 @@
 
     Yeti.Tools = new Object();
 
-    /* Yeti.Tools.protoStr
+    /* Yeti.Tools.typeOf
      * Returns a detailed text of the constructor
      */
 
-    Yeti.Tools.protoStr = function(obj) {
-        return Object().toString.call(obj);
+    Yeti.Tools.typeOf = function(obj) {
+        return Object().toString.call(obj).match(/(\w+)/ig)[1];
     }
 
     /* Yeti.Tools.Serializer
