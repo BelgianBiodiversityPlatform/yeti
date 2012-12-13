@@ -12,7 +12,7 @@
  * "THE BEER-WARE LICENSE" (Revision 42):
  * <julien.cigar@gmail.com> wrote this file. As long as you retain this notice
  * you can do whatever you want with this stuff. If we meet some day, and you
- * think this stuff is worth it, you can buy me a beer in return Julien Cigar.
+ * think this stuff is worth it, you can buy me a beer in return.
  * ----------------------------------------------------------------------------
  */
 
@@ -362,7 +362,8 @@
             el.addEventListener(type, listener, capture);
         } else if (el.attachEvent) {
             /* In IE events always bubble, no capturing possibility. */
-            //el.attachEvent('on' + type, listener);
+            el.attachEvent('on' + type, listener);
+/*
             var _type = 'on' + type;
 
             if (el[_type] === null) {
@@ -372,6 +373,7 @@
                     el[_type](); listener();
                 }
             }
+*/
         } else {
             ;
         }
