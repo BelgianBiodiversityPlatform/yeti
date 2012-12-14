@@ -362,7 +362,8 @@
             el.addEventListener(type, listener, capture);
         } else if (el.attachEvent) {
             /* In IE events always bubble, no capturing possibility. */
-            //el.attachEvent('on' + type, listener);
+            el.attachEvent('on' + type, listener);
+/*
             var _type = 'on' + type;
 
             if (el[_type] === null) {
@@ -372,6 +373,7 @@
                     el[_type](); listener();
                 }
             }
+*/
         } else {
             ;
         }
