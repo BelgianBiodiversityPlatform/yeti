@@ -400,7 +400,7 @@
          * not implemented, just says it's there and fails when called.
          */
         try {
-            return document.importNode(node, deep) :
+            return document.importNode(node, deep);
         } catch(e) {
             return (function(node, deep) {
                 /* Returns an integer code representing the type of the node. */
