@@ -442,7 +442,7 @@
                             }
                         }
 
-                        if (deep && node.childNodes && node.childNodes.length > 0) {
+                        if (deep && node.hasChildNodes()) {
                             for (var i=0, _len=node.childNodes.length ; i<_len ; i++) {
                                 newNode.appendChild(Yeti.DOM.importNode(node.childNodes[i], deep));
                             }
