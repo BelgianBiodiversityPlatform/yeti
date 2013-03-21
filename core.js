@@ -140,6 +140,18 @@
       };
     }
 
+    /* Array.forEach
+     * Executes a provided function once per array element.
+     */
+
+    if (!Array.prototype.forEach) {
+        Array.prototype.forEach = function(callable, scope) {
+            for(var i=0, _len = this.length; i < _len; ++i) {
+                callable.call(scope, this[i], i, this);
+            }
+        }
+    }
+
     /* String.trim
      * Removes whitespace from both ends of the string.
      */
