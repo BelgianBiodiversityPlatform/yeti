@@ -18,7 +18,7 @@
 
 ;(function(ns) {
 
-    var Yeti = ns.Yeti = new Object();
+    var Yeti = ns.Yeti = {};
 
     /* Simple URL cleaner */
 
@@ -155,7 +155,7 @@
         Str
     ************************************************************************/
 
-    Yeti.Str = new Object()
+    Yeti.Str = {};
 
     /* Yeti.Str.reverse
      * Returns the string reversed.
@@ -312,7 +312,7 @@
         JSON
     ************************************************************************/
 
-    Yeti.JSON = new Object();
+    Yeti.JSON = {};
 
     /* Yeti.JSON.parse
      * Parses a string as JSON and returns the parsed value.
@@ -333,7 +333,7 @@
         Event
     ************************************************************************/
 
-    Yeti.Evt = new Object();
+    Yeti.Evt = {};
 
     /* Yeti.Evt.preventDefault
      * Cancels the event if it is cancelable, without stopping further 
@@ -384,7 +384,7 @@
         DOM
     ************************************************************************/
 
-    Yeti.DOM = new Object();
+    Yeti.DOM = {};
 
     /* Yeti.DOM.importNode
      * Creates a copy of a node from an external document that can be
@@ -637,7 +637,7 @@
         Tools
     ************************************************************************/
 
-    Yeti.Tools = new Object();
+    Yeti.Tools = {};
 
     /* Yeti.Tools.typeOf
      * Returns a detailed text of the constructor
